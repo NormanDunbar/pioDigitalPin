@@ -17,7 +17,7 @@ avrDigitalPin::avrDigitalPin(pinName_t pinNumber,
         _ddr = &DDRD;
 
         // PinBit is the same as the pin.
-        _bitMask = pinNumber;
+        _bitNumber = pinNumber;
     } else if (pinNumber <= pinD13) {
         // We are in B registers.
         _port = &PORTB;
@@ -25,7 +25,7 @@ avrDigitalPin::avrDigitalPin(pinName_t pinNumber,
         _ddr = &DDRB;
 
         // PinBit is the pin - 8
-        _bitMask = pinNumber - 8;
+        _bitNumber = pinNumber - 8;
     } else {
         // We are in C registers.
         _port = &PORTC;
@@ -33,25 +33,25 @@ avrDigitalPin::avrDigitalPin(pinName_t pinNumber,
         _ddr = &DDRC;
 
         // PinBit is the pin - 14
-        _bitMask = pinNumber - 14;
+        _bitNumber = pinNumber - 14;
     }
 
     // Now we have the registers, configure the pin.
     if (Mode == pinOUTPUT) {
         // OUTPUT_pin: set bit in DDRx register.
-        *_ddr |= (1 << _bitMask);
+        *_ddr |= (1 << _bitNumber);
         _isOutput = true;
     } else {
         // INPUT [+/-PULLUP].
         // Clear bit in DDRx register.
-        *_ddr &= ~(1 << _bitMask);
+        *_ddr &= ~(1 << _bitNumber);
 
         if (Mode == pinINPUT) {
             // INPUT: Clear bit in PORTx register.
-            *_port &= ~(1 << _bitMask);
+            *_port &= ~(1 << _bitNumber);
         } else {
             // INPUT_PULLUP: Set bit in PORTx Register.
-            *_port |= (1 << _bitMask);
+            *_port |= (1 << _bitNumber);
         }
     }
 }                     
@@ -66,9 +66,9 @@ void avrDigitalPin::setState(pinState_t pinState)
         return;
 
     if (pinState)
-        *_port |= (1 << _bitMask);
+        *_port |= (1 << _bitNumber);
     else
-        *_port &= ~(1 << _bitMask);
+        *_port &= ~(1 << _bitNumber);
 }
 
 
@@ -78,7 +78,7 @@ void avrDigitalPin::toggleState()
     if (!_isOutput)
         return;
         
-    *_pin |= (1 << _bitMask);
+    *_pin |= (1 << _bitNumber);
 }
 
 
@@ -87,5 +87,5 @@ void avrDigitalPin::toggleState()
 // Read the pin state.
 pinState_t avrDigitalPin::getState()
 {
-    return (pinState_t)(!!(*_pin & (1 << _bitMask)));
+    return (pinState_t)(!!(*_pin & (1 << _bitNumber)));
 }

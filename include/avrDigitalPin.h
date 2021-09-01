@@ -111,7 +111,7 @@ private:
     volatile uint8_t *_pin;
     
     // Which bit in the above registers for this pin?
-    uint8_t _bitMask;
+    uint8_t _bitNumber;
 
     // Are we an OUTPUT pin?
     bool _isOutput;
